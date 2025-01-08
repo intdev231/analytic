@@ -1,0 +1,30 @@
+
+### 6. **Python Scripts**
+
+#### **src/data_processing/preprocess.py**
+
+This script fetches and processes Solana blockchain data:
+
+```python
+import pandas as pd
+from solana.rpc.api import Client
+
+# Solana API connection
+client = Client("https://api.mainnet-beta.solana.com")
+
+# Example function to fetch transactions for an address
+def get_transactions(address: str):
+    result = client.get_confirmed_signature_for_address2(address)
+    return result['result']
+
+def preprocess_data(transactions):
+    # Process the fetched transactions into a clean format
+    df = pd.DataFrame(transactions)
+    df['timestamp'] = pd.to_datetime(df['blockTime'], unit='s')
+    return df
+
+if __name__ == "__main__":
+    address = "Your_Solana_Address"
+    transactions = get_transactions(address)
+    processed_data = preprocess_data(transactions)
+    processed_data.to_csv('data/processed/transactions.csv', index=False)
