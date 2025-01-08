@@ -1,0 +1,44 @@
+from solana.rpc.api import Client
+import pandas as pd
+
+# Solana API client
+client = Client("https://api.mainnet-beta.solana.com")
+
+# Fetch confirmed transactions for a given address
+def fetch_transactions(address: str, limit: int = 10):
+    try:
+        response = client.get_confirmed_signature_for_address2(address, limit=limit)
+        return response['result']
+    except Exception as e:
+        print(f"Error fetching transactions: {e}")
+        return []
+
+# Fetch recent block information
+def fetch_recent_block():
+    try:
+        block = client.get_epoch_info()
+        return block
+    except Exception as e:
+        print(f"Error fetching block info: {e}")
+        return {}
+
+# Fetch transaction details using signature
+def fetch_transaction_details(signature: str):
+    try:
+        transaction = client.get_confirmed_transaction(signature)
+        return transaction['result']
+    except Exception as e:
+        print(f"Error fetching transaction details: {e}")
+        return {}
+
+# Save transactions to CSV
+def save_transactions_to_csv(transactions, file_path='data/processed/transactions.csv'):
+    df = pd.DataFrame(transactions)
+    df.to_csv(file_path, index=False)
+    print(f"Transactions saved to {file_path}")
+
+# Example usage
+if __name__ == "__main__":
+    address = "Your_Solana_Address"  # Replace with an actual Solana address
+    transactions = fetch_transactions(address, limit=50)
+    save_transactions_to_csv(transactions)
