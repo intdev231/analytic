@@ -1,0 +1,29 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load processed transaction data
+def load_transaction_data(file_path='data/processed/transactions.csv'):
+    df = pd.read_csv(file_path)
+    return df
+
+# Analyzing transaction frequency over time (per day)
+def analyze_transaction_frequency(df):
+    # Convert timestamp to datetime
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
+
+    # Group by date and count transactions
+    df['date'] = df['timestamp'].dt.date
+    transaction_counts = df.groupby('date').size()
+
+    # Plot transaction frequency over time
+    plt.figure(figsize=(10,6))
+    transaction_counts.plot(kind='line')
+    plt.title('Transaction Frequency Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Transaction Count')
+    plt.grid(True)
+    plt.show()
+
+if __name__ == "__main__":
+    df = load_transaction_data('data/processed/transactions.csv')
+    analyze_transaction_frequency(df)
