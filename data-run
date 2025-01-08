@@ -1,0 +1,17 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
+# Load preprocessed data
+df = pd.read_csv('data/processed/transactions.csv')
+
+# Example of clustering based on transaction size and frequency
+kmeans = KMeans(n_clusters=3)
+df['Cluster'] = kmeans.fit_predict(df[['amount', 'timestamp']])
+
+# Plot clusters
+plt.scatter(df['amount'], df['timestamp'], c=df['Cluster'])
+plt.xlabel('Amount')
+plt.ylabel('Timestamp')
+plt.title('Solana Transaction Clusters')
+plt.show()
